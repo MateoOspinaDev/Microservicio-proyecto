@@ -2,7 +2,8 @@ const Proyecto = require('../models/proyecto')
 const { request, response} = require('express')
 const TipoProyecto = require('../models/tipoProyecto')
 const Cliente = require('../models/cliente')
-// TODO: COLOCAR EL RESTO DE MODELOS
+const Etapa = require('../models/etapa')
+const Universidad = require('../models/universidad')
 
 // crear
 const createProyecto = async (req = request, 
@@ -10,15 +11,15 @@ const createProyecto = async (req = request,
     try{
         const data = req.body
         console.log(data)
-        const { tipoProyecto, cliente } = data;
-        //validando tipo proyecto
+        const { tipoProyecto, cliente, etapa, universidad } = data;
+
         const tipoProyectoDB = TipoProyecto.findOne({
             _id: tipoProyecto._id
         })
         if(!tipoProyectoDB){
             return res.status(400).json({msg: 'tipo proy invalido'})
         }
-        // validando cliente
+
         const clienteDB = Cliente.findOne({
             _id: cliente._id
         })
@@ -26,6 +27,20 @@ const createProyecto = async (req = request,
             return res.status(400).json({msg: 'marca invalida'})
         }
 
+        const etapaDB = Etapa.findOne({
+            _id: etapa._id
+        })
+        if(!etapaDB){
+            return res.status(400).json({msg: 'etapa invalida'})
+        }
+
+        const universidadDB = Universidad.findOne({
+            _id: universidad._id
+        })
+        if(!universidadDB){
+            return res.status(400).json({msg: 'universidad invalida'})
+        }
+        
         const proyecto = new Proyecto(data)
 
         await proyecto.save()
@@ -38,7 +53,6 @@ const createProyecto = async (req = request,
     }
 }
 
-//listar todos
 const getProyectos = async (req = request, 
     res = response) => {
         try{
@@ -49,7 +63,12 @@ const getProyectos = async (req = request,
                 .populate({
                     path: 'cliente'
                 })
-                // TODO: HACER POPULATE PARA EL RESTO DE MODELOS
+                .populate({
+                    path: 'etapa'
+                })
+                .populate({
+                    path: 'universidad'
+                })
             return res.json(proyectosDB)
         }catch(e){
             return res.status(500).json({
@@ -58,9 +77,7 @@ const getProyectos = async (req = request,
         }
 }
 
-// TODO
-// actualizar inventario
-/*const updateProyectoByID = async (req = request, 
+const updateProyectoByID = async (req = request, 
     res = response) => {
 
     try{
@@ -73,11 +90,11 @@ const getProyectos = async (req = request,
         return res.status(500).json({msj: 'Error'}) 
     }
 
-}*/
+}
 
 
 module.exports = { 
     createProyecto, 
     getProyectos, 
-    //updateProyectoByID 
+    updateProyectoByID 
 }
