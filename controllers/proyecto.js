@@ -83,8 +83,8 @@ const updateProyectoByID = async (req = request,
     try{
         const { id } = req.params
         const data = req.body
-        const inventario  = await Inventario.findByIdAndUpdate(id, data, {new: true})
-        return res.status(201).json(inventario)
+        const proyecto  = await Proyecto.findByIdAndUpdate(id, data, {new: true})
+        return res.status(201).json(proyecto)
     }catch(e){
         console.log(e)
         return res.status(500).json({msj: 'Error'}) 
