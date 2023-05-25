@@ -56,6 +56,7 @@ const createProyecto = async (req = request,
 const getProyectos = async (req = request, 
     res = response) => {
         try{
+            console.log('Entra la peticion')
             const proyectosDB = await Proyecto.find()
                 .populate({
                     path: 'tipoProyecto'
